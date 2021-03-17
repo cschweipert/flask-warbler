@@ -205,7 +205,9 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
-    # IMPLEMENT THIS
+    if not g.user:
+        flash("Access unauthorized.")
+        return redirect(("/"))
 
 
 @app.route('/users/delete', methods=["POST"])
