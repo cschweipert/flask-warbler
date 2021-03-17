@@ -209,22 +209,22 @@ def profile():
         flash("Access unauthorized.")
         return redirect("/")
 
-    # user = User.query.get_or_404(user_id)
-
     form = EditUserForm(obj=g.user)
 
     if form.validate_on_submit():
-        g.user.username = form.username.data
-        g.user.email = form.email.data
-        g.user.image_url = form.image_url.data
-        g.user.header_image_url = form.header_image_url.data
-        g.user.bio = form.bio.data
-        g.user.location = form.location.data
+        if User.authenticate(g.user.username, form.password.data):
+            g.user.username = form.username.data
+            g.user.email = form.email.data
+            g.user.image_url = form.image_url.data
+            g.user.header_image_url = form.header_image_url.data
+            g.user.bio = form.bio.data
+            g.user.location = form.location.data
 
-        db.session.commit()
-        flash("Profile updated")
+            db.session.commit()
+            flash("Profile updated")
 
-        return redirect(f"/users/{g.user.id}")
+            return redirect(f"/users/{g.user.id}")
+        flash("Password incorrect")
 
     return render_template("/users/edit.html", form=form)
 
@@ -307,8 +307,11 @@ def homepage():
     """
 
     if g.user:
+        following_ids = [f.id for f in g.user.following] + [g.user.id]
+
         messages = (Message
                     .query
+                    .filter(Message.user_id.in_(following_ids))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
