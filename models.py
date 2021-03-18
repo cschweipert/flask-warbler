@@ -176,6 +176,7 @@ class Message(db.Model):
     )
 
     user = db.relationship('User')
+    
 
 class Like(db.Model):
     """Through table between users and messages"""
