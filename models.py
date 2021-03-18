@@ -89,7 +89,7 @@ class User(db.Model):
     )
 
     liked_messages = db.relationship(
-        "User",
+        "Message",
         secondary="likes"
     )
 

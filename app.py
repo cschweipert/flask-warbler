@@ -296,20 +296,35 @@ def messages_destroy(message_id):
 @app.route('/messages/<int:message_id>/like', methods=["POST"])
 def like_or_unlike_messages(message_id):
 
-    liked_messages = Message.query.get_or_404(message_id)
-    breakpoint()
-    if liked_messages in g.user.liked_messages:
-
-        g.user.like.delete(message_id)
-        db.session.commit()
-
+    if not g.user:
+        flash("Access unauthorized.", "danger")
         return redirect("/")
+
+    liked_message = Message.query.get_or_404(message_id)
+
+    if liked_message in g.user.liked_messages:
+
+        g.user.liked_messages.remove(liked_message)
 
     else:
-        g.user.like.append(message_id)
-        db.session.commit()
+        
+        g.user.liked_messages.append(liked_message)
+    
+    db.session.commit()
+    return redirect("/")
 
+@app.route('/users/<int:user_id>/liked_messages')
+def show_likes(user_id):
+    
+    if not g.user:
+        flash("Access unauthorized.", "danger")
         return redirect("/")
+
+    user = User.query.get_or_404(user_id)
+    return render_template(
+        "users/liked_message.html",
+        user=user
+    )
 ##############################################################################
 # Homepage and error pages
 
