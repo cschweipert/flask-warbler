@@ -88,6 +88,11 @@ class User(db.Model):
         secondaryjoin=(Follows.user_being_followed_id == id)
     )
 
+    liked_messages = db.relationship(
+        "User",
+        secondary="likes"
+    )
+
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
@@ -172,6 +177,24 @@ class Message(db.Model):
 
     user = db.relationship('User')
 
+class Like(db.Model):
+    """Through table between users and messages"""
+    __tablename__ = "likes"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )    
+
+    message_id = db.Column(
+        db.Integer,
+        db.ForeignKey('messages.id')
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id')
+    )
 
 def connect_db(app):
     """Connect this database to provided Flask app.

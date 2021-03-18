@@ -293,7 +293,23 @@ def messages_destroy(message_id):
 
     return redirect(f"/users/{g.user.id}")
 
+@app.route('/messages/<int:message_id>/like', methods=["POST"])
+def like_or_unlike_messages(message_id):
 
+    liked_messages = Message.query.get_or_404(message_id)
+    breakpoint()
+    if liked_messages in g.user.liked_messages:
+
+        g.user.like.delete(message_id)
+        db.session.commit()
+
+        return redirect("/")
+
+    else:
+        g.user.like.append(message_id)
+        db.session.commit()
+
+        return redirect("/")
 ##############################################################################
 # Homepage and error pages
 
