@@ -299,6 +299,9 @@ def like_or_unlike_messages(message_id):
     if not g.user:
         # flash("Access unauthorized.", "danger")
         return {"error": "unauthorized"}
+    html = True
+    if request.headers.get("Content-Type", "").lower() == "application/json":
+        html = False
 
     liked_message = Message.query.get_or_404(message_id)
 
@@ -308,7 +311,10 @@ def like_or_unlike_messages(message_id):
         g.user.liked_messages.append(liked_message)
     
     db.session.commit()
-    return {"messagelike": "updated"}
+    if html: 
+        return render_template("show.html")
+    else:
+        return {"messagelike": "updated"}
 
 @app.route('/users/<int:user_id>/liked_messages')
 def show_likes(user_id):
