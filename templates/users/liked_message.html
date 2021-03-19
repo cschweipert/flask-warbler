@@ -55,7 +55,7 @@
             <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
             <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
             <p>{{ msg.text }}</p>
-            <form action="/messages/{{msg.id}}/like" method="POST">
+            <form id="like-form" action="/messages/{{msg.id}}/like" method="POST">
                   <button class="fas fa-heart"></button>
           </div>
         </li>

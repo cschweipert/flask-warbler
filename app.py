@@ -297,21 +297,18 @@ def messages_destroy(message_id):
 def like_or_unlike_messages(message_id):
 
     if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
+        # flash("Access unauthorized.", "danger")
+        return {"error": "unauthorized"}
 
     liked_message = Message.query.get_or_404(message_id)
 
     if liked_message in g.user.liked_messages:
-
         g.user.liked_messages.remove(liked_message)
-
     else:
-        
         g.user.liked_messages.append(liked_message)
     
     db.session.commit()
-    return redirect("/")
+    return {"messagelike": "updated"}
 
 @app.route('/users/<int:user_id>/liked_messages')
 def show_likes(user_id):

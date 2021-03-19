@@ -19,9 +19,9 @@
               {{ message.timestamp.strftime('%d %B %Y') }}
             </span>
             <p>{{ message.text }}</p>
-            <form action="/messages/{{message.id}}/like" method="POST">
+            <form id="like-form" action="/messages/{{message.id}}/like" method="POST">
               {% if message in g.user.liked_messages %}
-                  <button class="fas fa-heart"></button>
+                  <button id="like-button" class="fas fa-heart"></button>
               {% else %}  
                   <button class="far fa-heart"></button>
               {% endif %}
